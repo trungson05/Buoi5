@@ -1,0 +1,129 @@
+@model IEnumerable<Buoi5.Models.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<!-- Form Tìm kiếm (Giữ lại kiểu sắp xếp hiện tại khi tìm kiếm) -->
+<form asp-action="Index" method="get" class="mb-3">
+    <input type="hidden" name="sortOrder" value="@ViewBag.CurrentSort" />
+    <input type="text" name="searchString" value="@ViewBag.CurrentFilter" placeholder="Nhap ten san pham hoac danh muc..." />
+    <button type="submit">Search</button>
+    <a asp-action="Index">Tat ca</a>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <!-- Bấm vào tiêu đề cột để sắp xếp theo ID -->
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewBag.IdSortParm"
+                   asp-route-searchString="@ViewBag.CurrentFilter">
+                    ID ⇅
+                </a>
+            </th>
+            <th>
+                <!-- Bấm vào tiêu đề cột để sắp xếp theo Tên sản phẩm -->
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewBag.NameSortParm"
+                   asp-route-searchString="@ViewBag.CurrentFilter">
+                    @Html.DisplayNameFor(model => model.ProductName) ⇅
+                </a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductDescriptiion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductDescriptiion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Thanh Phân trang (Pagination) -->
+@if (ViewBag.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination">
+            <!-- Nút Trang trước -->
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(ViewBag.CurrentPage - 1)"
+                       asp-route-searchString="@ViewBag.CurrentFilter"
+                       asp-route-sortOrder="@ViewBag.CurrentSort">
+                        Trước
+                    </a>
+                </li>
+            }
+
+            <!-- Danh sách các số trang (1, 2, 3...) -->
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-searchString="@ViewBag.CurrentFilter"
+                       asp-route-sortOrder="@ViewBag.CurrentSort">
+                        @i
+                    </a>
+                </li>
+            }
+
+            <!-- Nút Trang sau -->
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(ViewBag.CurrentPage + 1)"
+                       asp-route-searchString="@ViewBag.CurrentFilter"
+                       asp-route-sortOrder="@ViewBag.CurrentSort">
+                        Sau
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
